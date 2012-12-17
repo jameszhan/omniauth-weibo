@@ -53,8 +53,7 @@ module OmniAuth
       
       protected
         def build_access_token
-          verifier = request.params['code']
-          client.auth_code.get_token(verifier, {:redirect_uri => callback_url}.merge(token_params.to_hash(:symbolize_keys => true)), :mode => :query, :param_name => :access_token)
+          super.tap{ |access_token| access_token.options.merge!(:mode => :query, :param_name => :access_token) }
         end
       
     end
