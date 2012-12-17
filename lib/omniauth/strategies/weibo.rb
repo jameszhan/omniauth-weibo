@@ -8,10 +8,11 @@ module OmniAuth
         :authorize_url  => "/oauth2/authorize",
         :token_url      => "/oauth2/access_token"
       }
+      
       option :token_params, {
         :parse          => :json
       }
-
+      
       uid { raw_info['id'].to_s }
 
       info do
@@ -33,13 +34,7 @@ module OmniAuth
       end
 
       def raw_info
-        puts "========================"
-        puts access_token
-        puts "========================"
-        access_token.options[:mode] = :query
-        access_token.options[:param_name] = 'access_token'
-        #@uid ||= access_token.get('/2/account/get_uid.json').parsed["uid"]
-        uid = access_token[:uid]
+        uid = access_token[:uid] || access_token["uid"]
         @raw_info ||= access_token.get("/2/users/show.json", :params => {:uid => uid}).parsed
       end
 
@@ -56,7 +51,15 @@ module OmniAuth
         end
       end
       
+      protected
+        def build_access_token
+          verifier = request.params['code']
+          client.auth_code.get_token(verifier, {:redirect_uri => callback_url}.merge(token_params.to_hash(:symbolize_keys => true)), :mode => :query, :param_name => :access_token)
+        end
+      
     end
+    
+    
   end
 end
 
