@@ -35,7 +35,8 @@ module OmniAuth
 
       def raw_info
         uid = access_token[:uid] || access_token["uid"]
-        @raw_info ||= access_token.get("/2/users/show.json", :params => {:uid => uid}).parsed
+        @token_info ||= access_token.params.merge("token" => access_token.token)
+        @raw_info ||= {"token_info" => @token_info}.merge(access_token.get("/2/users/show.json", :params => {:uid => uid}).parsed)
       end
 
       def authorize_params
@@ -57,7 +58,6 @@ module OmniAuth
         end
       
     end
-    
     
   end
 end
