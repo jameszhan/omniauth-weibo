@@ -5,7 +5,7 @@ module OmniAuth
     class Weibo < OmniAuth::Strategies::OAuth2
       option :client_options, {
         site:           "https://api.weibo.com",
-        authorize_url:  "value", "/oauth2/authorize",
+        authorize_url:  "/oauth2/authorize",
         token_url:      "/oauth2/access_token"
       }
       
@@ -29,12 +29,8 @@ module OmniAuth
         }
       end
 
-      credentials do
-        { access_token: access_token.token }
-      end
-  
       extra do
-        { :raw_info => raw_info }
+        { raw_info: raw_info }
       end
 
       def raw_info
